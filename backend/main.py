@@ -1,5 +1,7 @@
+import os
+
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 
 import csv
 import datetime
@@ -9,10 +11,15 @@ import numpy as np
 
 
 from fastapi.middleware.cors import CORSMiddleware
-
-origins = ["*"]
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+
+# 파일 경로 설정
+BASE_DIR = os.path.dirname(os.path.realpath('.'))
+
+# CORS(Cross-Origin Resource Sharing) 허용
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,6 +30,7 @@ app.add_middleware(
 )
 
 
+# csv 파일 open
 f=open('../user_list.csv','r', encoding='cp949')
 rdr = csv.reader(f)
 chart=[line for line in rdr]
@@ -35,10 +43,6 @@ f.close()
 df = pandas.DataFrame(chart)
 userList = np.array(chart).T[1]
 print(userList)
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
 
 # @app.get("/test")
 # def getTest():
@@ -55,6 +59,7 @@ async def get_user_all():
 # def read_item(item_id: int, q: Union[str, None] = None):
 #     return {"item_id": item_id, "q": q}
 
+# REST API
 @app.post("/user/id")
 def use_card(id: int):
     print(id)
@@ -70,3 +75,6 @@ def use_name(name: str):
         "result": "true"
     }
 
+
+# SPA React Render
+app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "frontend/build"), html = True), name="static")
