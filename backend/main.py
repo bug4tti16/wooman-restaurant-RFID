@@ -7,6 +7,8 @@ import csv
 import datetime
 import pandas
 import json
+import uvicorn
+import sys
 import numpy as np
 
 
@@ -16,7 +18,7 @@ from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 
 # 파일 경로 설정
-BASE_DIR = os.path.dirname(os.path.realpath('.'))
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # CORS(Cross-Origin Resource Sharing) 허용
 origins = ["*"]
@@ -29,9 +31,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # csv 파일 open
-f=open('../user_list.csv','r', encoding='cp949')
+f=open(os.path.join(BASE_DIR, "../user_list.csv"),'r', encoding='cp949')
 rdr = csv.reader(f)
 chart=[line for line in rdr]
 # print(chart)
@@ -76,5 +77,16 @@ def use_name(name: str):
     }
 
 
+@app.get("/kill")
+def kill_server():
+    sys.exit()
+
+
 # SPA React Render
-app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "frontend/build"), html = True), name="static")
+app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "../frontend/build"), html = True), name="static")
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000)
+
+    
