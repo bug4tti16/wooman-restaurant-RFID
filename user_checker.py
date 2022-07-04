@@ -14,7 +14,7 @@ import csv
 import datetime
 import pandas
 
-f=open('user_list.csv','r')
+f=open('user_list.csv','r', encoding='cp949')
 rdr = csv.reader(f)
 chart=[line for line in rdr]
 print("차트의 길이는 "+str(len(chart))+" 입니다")
