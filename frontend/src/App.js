@@ -2,7 +2,7 @@ import logo from './logo.svg';
 
 import './App.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Autosuggest from "react-autosuggest";
 import axios from 'axios'
 
@@ -48,16 +48,42 @@ function App() {
   const [suggestions, setSuggestions] = useState([]);
   const [userData, setUserdata] = useState([]);
   const [history, setHistory] = useState([]);
+
+  
+
+  // Scrol
+
+  const scrollRef = useRef();
+
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+  // }
+
+  // useEffect(scrollToBottom, [messages]);
+
+
+  const scrollToBottom = () => {
+    const {scrollHeight, clientHeight} = scrollRef.current;
+    scrollRef.current.scrollTop = scrollHeight - clientHeight
+  }
+
+
+
   console.log(history, typeof(history))
 
   useEffect(() => {
     async function fetchAPI() {
-      const result = await axios.get('/user/all')
+      const result = await axios.get('/user/all/list')
       setUserdata(result.data)
 
     }
     fetchAPI()
   }, [])
+
+
+  useEffect(()=>{
+      scrollToBottom()
+  },[history])
 
   function getSuggestions(value) {  
     return userData.filter(name => name.includes(value.trim().toLowerCase()));
@@ -69,6 +95,7 @@ function App() {
     console.log(history, typeof(history))
     setHistory([...history, value]);
     setValue('')
+    scrollToBottom()
   };
 
   // console.log(getSuggestions('김'))
@@ -80,27 +107,35 @@ function App() {
         <p>
           경로 식당 입장 입력기
         </p> */}
-
-      <h1>경로 식당</h1>
-      <div>
-        <h2>기록</h2>
+      <h1 style={{margin: "10px"}}>우만종합사회복지관</h1>
+      <h2>경로 식당</h2>
+      
+      <div style={{
+        width: "80%"
+      }}>
+        <h3>로그</h3>
         <div>
-          <table className='History-table'>
+        경로 식당 이용자 수: {history.length}명
+        </div>
+          <div className='History-table' ref={scrollRef}>
             {
               history.map((e) => {
-                return (<tr>
-                  <td>
-                    {e}
-                  </td>
-                </tr>
+                return (<div className='History-item'>{e}</div>
                 )
               })
             }
-          </table>
-        </div>
+          </div>
       </div>
-{/* 
-      <h2>입력</h2> */}
+      <div style={{
+        width: "80%",
+        textAlign: "end",
+        fontSize: "1rem"
+      }}>
+        <span>저장</span>
+
+      </div>
+
+      <h3>입력</h3>
 
       <form onSubmit={onSubmit} className="App-form">
       <Autosuggest
