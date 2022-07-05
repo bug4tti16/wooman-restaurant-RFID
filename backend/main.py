@@ -2,6 +2,7 @@ import os
 
 from typing import Union
 from fastapi import FastAPI, Request
+from pydantic import BaseModel
 
 import csv
 import datetime
@@ -14,6 +15,9 @@ import numpy as np
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -43,38 +47,97 @@ f.close()
 
 df = pandas.DataFrame(chart)
 userList = np.array(chart).T[1]
-print(userList)
+userIndex = np.array(chart).T[0]
+# print(userList)
 
+# User Json 생성
+ChartNameToNum = {}
+ChartNumToName = {}
+
+ChartNum = set()
+ChartName = set()
+
+
+for index, name in zip(userIndex, userList):
+    if index.isnumeric():
+        stripName = "".join(name.split())
+        i = int(index)
+        ChartNumToName[i] = stripName
+        ChartNameToNum[stripName] = i
+        ChartNum.add(i)
+        ChartName.add(stripName)
+
+# userChartJson = json.dumps(userChartDict, ensure_ascii=False)
+# print(json.dumps(np.array(chart)))
 # @app.get("/test")
 # def getTest():
 #     return ['dsa', 'fde', 'feds']
 
 # 경로 식당 유저 목록
-@app.get("/user/all")
-async def get_user_all():
+@app.get("/user/all/list")
+async def get_user_type_list():
     # print(json.dumps(userList.tolist()))
     return userList.tolist()[1:]
+
+@app.get("/user/all/json")
+async def get_user_type_json():
+
+    # print(json.dumps(userList.tolist()))
+    
+    # return userChartJson
+    return JSONResponse({
+        'name': ChartNameToNum,
+        'index': ChartNumToName
+    })
 
 
 # @app.get("/items/{item_id}")
 # def read_item(item_id: int, q: Union[str, None] = None):
 #     return {"item_id": item_id, "q": q}
 
+class Guest (BaseModel):
+    index: int
+
 # REST API
 @app.post("/user/id")
-def use_card(id: int):
-    print(id)
-    return {
-        "result": "true"
-    }
+def use_card(guest: Guest):
+    # print(guest.index)
+    if guest.index in ChartNum:
+        # print(ChartNumToName[guest.index], guest.index)
+        return {
+            "result": True,
+            "name": ChartNumToName[guest.index],
+            "index": guest.index,
+            "error": ""
+        }
+    else:
+        return {
+            "result": False,
+            "name": "",
+            "index": guest.index,
+            "error": "명단에 없는 번호입니다"
+        }
 
+
+class GuestName (BaseModel):
+    name: str
 
 @app.post("/user/name")
-def use_name(name: str):
-    print(name)
-    return {
-        "result": "true"
-    }
+def use_name(guestName: GuestName):
+    if guestName.name in ChartName:
+        return {
+            "result": True,
+            "name": guestName.name,
+            "index": ChartNameToNum[guestName.name],
+            "error": ""
+        }
+    else:
+        return {
+            "result": False,
+            "name": guestName.name,
+            "index": "",
+            "error": "명단에 없는 이름입니다"
+        }
 
 
 @app.get("/kill")
@@ -86,7 +149,6 @@ def kill_server():
 app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "../frontend/build"), html = True), name="static")
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, port=8000)
-
-    
+# Production
+# if __name__ == "__main__":
+#     uvicorn.run(app, port=8000)

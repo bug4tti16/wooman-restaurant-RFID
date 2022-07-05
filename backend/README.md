@@ -28,4 +28,7 @@ C:\Users\Lucia\AppData\Local\Programs\Python\Python38\python.exe "C:\Users\Lucia
 
 
 케바케인듯 알아서 찾아서 만들 것
-C:\Python38\python.exe "%USERPROFILE%\dev\wooman-restaurant-master\backend\main.py"
+C:\Python38\python.exe C:\Users\kuna\Dev\wooman-restaurant\backend\main.py
+
+
+%USERPROFILE%\AppData\Local\Programs\Python\Python38\python.exe  C:\Users\kuna\Dev\wooman-restaurant\backend\main.py

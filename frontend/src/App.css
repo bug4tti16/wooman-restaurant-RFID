@@ -91,6 +91,7 @@
   width: 100%;
   height: 30vh;
   /* display: block; */
+  border: cornflowerblue 4px solid;
   overflow-y: scroll;
  
   /* flex-direction: column-reverse; */
@@ -98,4 +99,13 @@
 
 .History-item {
   display:flex;
+}
+
+
+.History-item-success {
+  color: greenyellow;
+}
+
+.History-item-fail {
+  color: tomato;
 }

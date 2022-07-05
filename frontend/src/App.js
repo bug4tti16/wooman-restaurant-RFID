@@ -47,12 +47,14 @@ function App() {
   const [value, setValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [userData, setUserdata] = useState([]);
+  // const [ChartName, setChartName] = useState({});
+  // const [ChartIndex, setChartIndex] = useState({});
+
   const [history, setHistory] = useState([]);
 
   
 
-  // Scrol
-
+  // Scroll
   const scrollRef = useRef();
 
   // const scrollToBottom = () => {
@@ -67,14 +69,14 @@ function App() {
     scrollRef.current.scrollTop = scrollHeight - clientHeight
   }
 
-
-
-  console.log(history, typeof(history))
-
   useEffect(() => {
     async function fetchAPI() {
       const result = await axios.get('/user/all/list')
+      // const result2 = await axios.get('/user/all/json')
       setUserdata(result.data)
+      // setChartName(result2?.data?.name)
+      // setChartIndex(result2?.data?.index)
+
 
     }
     fetchAPI()
@@ -89,16 +91,37 @@ function App() {
     return userData.filter(name => name.includes(value.trim().toLowerCase()));
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(value);
-    console.log(history, typeof(history))
-    setHistory([...history, value]);
+
+    if (typeof(value) != "string" || value.length == 0) {
+      return;
+    }
+
+    if (!isNaN(value)) { // 숫자로 입력한 경우
+      const index = parseInt(value)
+      const {data: result} = await axios.post('/user/id', {index})
+      setHistory([...history, {
+        name: result.name,
+        id: result.index,
+        result: result.result,
+        error: result.error
+      }]);
+    }
+    else { // string 입력
+      const {data: result} = await axios.post('/user/name', {name: value.replace(/ /gi, "")})
+      setHistory([...history, {
+        name: result.name,
+        id: result.index,
+        result: result.result,
+        error: result.error
+      }]);
+    }
+    // setHistory([...history, log]);
     setValue('')
     scrollToBottom()
   };
 
-  // console.log(getSuggestions('김'))
 
   return (
     <div className="App">
@@ -113,15 +136,28 @@ function App() {
       <div style={{
         width: "80%"
       }}>
-        <h3>로그</h3>
-        <div>
+        <div style={{marginTop: "10px"}}>
         경로 식당 이용자 수: {history.length}명
         </div>
           <div className='History-table' ref={scrollRef}>
             {
-              history.map((e) => {
-                return (<div className='History-item'>{e}</div>
-                )
+              history.map(({
+                name, id, result, error
+              }, index) => {
+                if (result) {
+                  return (
+                  <div key={index} className='History-item-success'> 
+                      {id}번 {name} 확인완료
+                  </div>
+                  )
+                }
+                else {
+                  return (
+                  <div key={index} className='History-item-fail'>
+                    {id || name} (사유: {error})
+                  </div>
+                  )
+                }
               })
             }
           </div>
@@ -132,7 +168,6 @@ function App() {
         fontSize: "1rem"
       }}>
         <span>저장</span>
-
       </div>
 
       <h3>입력</h3>
@@ -145,9 +180,6 @@ function App() {
           setValue(value);
           setSuggestions(getSuggestions(value));
         }}
-        onSuggestionSelected={(_, { suggestionValue }) =>
-          console.log("Selected: " + suggestionValue)
-        }
         getSuggestionValue={suggestion => suggestion}
         renderSuggestion={suggestion => (<span>{suggestion}</span>)
         }
