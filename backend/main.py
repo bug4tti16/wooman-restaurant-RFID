@@ -108,14 +108,14 @@ def use_card(guest: Guest):
             "result": True,
             "name": ChartNumToName[guest.index],
             "index": guest.index,
-            "error": ""
+            "error": 0
         }
     else:
         return {
             "result": False,
             "name": "",
             "index": guest.index,
-            "error": "명단에 없는 번호입니다"
+            "error": 1
         }
 
 
@@ -129,15 +129,38 @@ def use_name(guestName: GuestName):
             "result": True,
             "name": guestName.name,
             "index": ChartNameToNum[guestName.name],
-            "error": ""
+            "error": 0
         }
     else:
         return {
             "result": False,
             "name": guestName.name,
             "index": "",
-            "error": "명단에 없는 이름입니다"
+            "error": 2
         }
+
+
+# 취소
+@app.delete("/user/id")
+def user_revert(guest: Guest):
+    print(guest.index)
+    if guest.index in ChartNum:
+        # print(ChartNumToName[guest.index], guest.index)
+        return {
+            "result": True,
+            "name": ChartNumToName[guest.index],
+            "index": guest.index,
+            "error": 3
+        }
+    else: # 여기에 들어갈 일 x
+        return {
+            "result": False,
+            "name": "",
+            "index": guest.index,
+            "error": 1
+        } 
+
+
 
 
 @app.get("/kill")
