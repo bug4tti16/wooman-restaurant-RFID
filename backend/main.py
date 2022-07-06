@@ -7,11 +7,12 @@ from pydantic import BaseModel
 import csv
 import datetime
 import pandas
+
 import json
 import uvicorn
 import sys
 import numpy as np
-
+from dateutil.parser import parse
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -26,6 +27,11 @@ BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # CORS(Cross-Origin Resource Sharing) 허용
 origins = ["*"]
+
+################### User Interface ########################
+카드지참="O" #ex) "O"
+카드미지참="A" #ex) "A"
+###########################################################
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,7 +63,6 @@ ChartNumToName = {}
 ChartNum = set()
 ChartName = set()
 
-
 for index, name in zip(userIndex, userList):
     if index.isnumeric():
         stripName = "".join(name.split())
@@ -66,6 +71,19 @@ for index, name in zip(userIndex, userList):
         ChartNameToNum[stripName] = i
         ChartNum.add(i)
         ChartName.add(stripName)
+
+
+
+# 오늘 날짜 설정
+dt=datetime.datetime.now()
+today=str(dt.month)+"_"+str(dt.day)
+today_month=dt.month
+today_day=dt.day
+
+print(today)
+
+
+
 
 # userChartJson = json.dumps(userChartDict, ensure_ascii=False)
 # print(json.dumps(np.array(chart)))
@@ -138,6 +156,30 @@ def use_name(guestName: GuestName):
             "index": "",
             "error": 2
         }
+
+
+# 날짜 시작하기
+class DateType (BaseModel):
+    today: str
+
+
+
+@app.post("/start")
+def use_name(today: DateType):
+    print(today.today)
+    # datetime_obj = parse(today.today)
+    # print(datetime_obj)
+    # print(datetime_obj.date(), datetime_obj.time())
+    startDate = datetime.datetime.strptime(today.today, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    timezone_kst =  datetime.timezone(datetime.timedelta(hours=9))
+    datetime_kst = startDate.astimezone(timezone_kst)
+    print(startDate)
+    print(datetime_kst)
+    print(datetime_kst.strftime("%-m_%-d"))
+    return {
+        "result": True
+    }
 
 
 # 취소

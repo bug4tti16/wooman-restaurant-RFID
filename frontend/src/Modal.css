@@ -1,0 +1,9 @@
+.Modal-Main {
+    background-color: #282c34;
+    bottom: 10%;
+    height: 80vh;
+    font-size: calc(10px + 2vmin);
+    color: white;
+    text-align: center;
+    display: block;
+}

@@ -4,9 +4,14 @@ import './App.css';
 
 import { useEffect, useState, useRef } from 'react';
 import Autosuggest from "react-autosuggest";
+import React from 'react';
+
 import axios from 'axios'
 
+
 import errorCode from './errorCode.json'
+import StartPageModal from './Components/Modal'
+
 
 function App() {
 
@@ -138,21 +143,21 @@ function App() {
                 if (type == 0) {
                   return (
                   <div key={index} className='History-item History-item-success'> 
-                      {id}번 {name} 확인완료 <button className='History-revert-button' onClick={(e) => {revert(id, name, e)}}>취소</button>
+                      <span style={{}}>{id}번 {name}</span> 확인완료 <button className='History-revert-button' onClick={(e) => {revert(id, name, e)}}>취소</button>
                   </div>
                   )
                 }
                 else if (type == 1) {
                   return (
                   <div key={index} className='History-item History-item-fail'>
-                    {id || name} ({errorCode[error]})
+                    <span style={{}}>{id || name}</span> ({errorCode[error]})
                   </div>
                   )
                 }
                 else if (type == 2) {
                   return (
                     <div key={index} className='History-item History-item-revert'>
-                      {id}번 {name} 취소완료
+                      <span style={{}}>{id}번 {name}</span> 취소완료
                     </div>
                   )
                 }
@@ -199,6 +204,12 @@ function App() {
         highlightFirstSuggestion={true}
       />
       </form>
+
+      <StartPageModal />
+
+
+      
+
       </div>      
     </div>
   );

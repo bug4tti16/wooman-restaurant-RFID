@@ -103,7 +103,6 @@
   padding-left: 20%;
   padding-right: 20%;
   text-align: start;
-  
   /* padding-left: 10%;
   padding-right: 10%;
   padding-top: 10px; */
@@ -123,6 +122,10 @@
   font-size: calc(5px + 2vmin);
   margin-left: 10%;
   float: right;
+}
+.History-revert-button:hover {
+  background-color: darkslategrey;
+  border-radius: 15px;
 }
 
 
