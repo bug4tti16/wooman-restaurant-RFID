@@ -1,5 +1,5 @@
 import os
-
+import webbrowser
 from typing import Union
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
@@ -173,5 +173,8 @@ app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "../frontend/build")
 
 
 # Production
+# 배포 시, 주석 풀기
+# webbrowser.open('http://localhost:8000')
 # if __name__ == "__main__":
 #     uvicorn.run(app, port=8000)
+    
