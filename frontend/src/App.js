@@ -8,42 +8,6 @@ import axios from 'axios'
 
 import errorCode from './errorCode.json'
 
-// const companies = [
-//   { id: 1, name: "Company1" },
-//   { id: 2, name: "Company2" },
-//   { id: 3, name: "Company3" },
-//   { id: 4, name: "Company4" },
-//   { id: 5, name: "Company5" },
-//   { id: 6, name: "Company6" },
-//   { id: 7, name: "Company7" }
-// ];
-
-// const lowerCasedCompanies = companies.map(company => {
-//   return {
-//     id: company.id,
-//     name: company.name.toLowerCase()
-//   };
-// });
-
-
-// const getSuggestions = value => {
-//   const inputValue = value.trim().toLowerCase();
-//   const inputLength = inputValue.length;
-
-//   return inputLength === 0 ? [] : languages.filter(lang =>
-//     lang.name.toLowerCase().slice(0, inputLength) === inputValue
-//   );
-// };
-
-
-// const getSuggestionValue = suggestion => suggestion.name;
-
-// // Use your imagination to render suggestions.
-// const renderSuggestion = suggestion => (
-//   <div>
-//     {suggestion.name}
-//   </div>
-// );
 function App() {
 
   const [value, setValue] = useState('');
@@ -77,8 +41,6 @@ function App() {
       setUserdata(result.data)
       // setChartName(result2?.data?.name)
       // setChartIndex(result2?.data?.index)
-
-
     }
     fetchAPI()
   }, [])
@@ -134,26 +96,22 @@ function App() {
 
   const revert = async (id, name, e) => {
     e.preventDefault()
-    const result = window.confirm(`${id}번 ${name}님 기록을 삭제하시겠습니까?`)
-    if (result) {
-      
-      const {data: result} = await axios.delete('/user/id', {
-        data: {
-          index: id
-        }
-      })
-      setHistory([...history, {
-        name: result.name,
-        id: result.index,
-        result: result.result,
-        error: result.error,
-        type: 2 // type 2: 취소
-      }]);
-
-      if (result.result) {
-        setUsercnt(new Set([...userCnt].filter(x => x != result.index)))
+    const {data: result} = await axios.delete('/user/id', {
+      data: {
+        index: id
       }
-    }   
+    })
+    setHistory([...history, {
+      name: result.name,
+      id: result.index,
+      result: result.result,
+      error: result.error,
+      type: 2 // type 2: 취소
+    }]);
+
+    if (result.result) {
+      setUsercnt(new Set([...userCnt].filter(x => x != result.index)))
+    }
   }
 
   return (
