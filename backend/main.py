@@ -60,17 +60,15 @@ userIndex = np.array(chart).T[0]
 ChartNameToNum = {}
 ChartNumToName = {}
 
-ChartNum = set()
-ChartName = set()
-
 for index, (id, name) in enumerate(zip(userIndex, userList)):
     if id.isnumeric():
         stripName = "".join(name.split())
         ChartNumToName[int(id)] = [stripName, index] # chart index
         ChartNameToNum[stripName] = [int(id), index]
-        ChartNum.add(int(id))
-        ChartName.add(stripName)
 
+
+print(ChartNameToNum)
+print(ChartNumToName)
 
 
 # 오늘 날짜 설정
@@ -120,7 +118,7 @@ class Guest (BaseModel):
 def use_card(guest: Guest):
     global chart
     # print(guest.index)
-    if guest.id in ChartNum:
+    if guest.id in ChartNumToName.keys():
         name = ChartNumToName[guest.id][0]
         index = ChartNumToName[guest.id][1]
         print(chart[index], chart[0])
@@ -148,7 +146,7 @@ class GuestName (BaseModel):
 @app.post("/user/name")
 def use_name(guestName: GuestName):
     global chart
-    if guestName.name in ChartName:
+    if guestName.name in ChartNameToNum.keys():
         id = ChartNameToNum[guestName.name][0],
         index = ChartNameToNum[guestName.name][1]
         print(id, index)
@@ -241,7 +239,7 @@ def use_name(todayDate: DateType):
 def user_revert(guest: Guest):
     global chart
     print(guest.id)
-    if guest.id in ChartNum:
+    if guest.id in ChartNumToName.keys():
 
         index = ChartNumToName[guest.id][1]
         chart[index][-1]=''
@@ -287,7 +285,6 @@ app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "../frontend/build")
 
 # Production
 # 배포 시, 주석 풀기
-webbrowser.open('http://localhost:8000')
-if __name__ == "__main__":
-    uvicorn.run(app, port=8000)
-    
+# webbrowser.open('http://localhost:8000')
+# if __name__ == "__main__":
+#     uvicorn.run(app, port=8000)
