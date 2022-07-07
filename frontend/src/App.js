@@ -12,7 +12,6 @@ import axios from 'axios'
 import errorCode from './errorCode.json'
 import StartPageModal from './Components/Modal'
 
-
 function App() {
 
   const [value, setValue] = useState('');
@@ -68,30 +67,30 @@ function App() {
     }
 
     if (!isNaN(value)) { // 숫자로 입력한 경우
-      const index = parseInt(value)
-      const {data: result} = await axios.post('/user/id', {index})
+      const id = parseInt(value)
+      const {data: result} = await axios.post('/user/id', {id})
       setHistory([...history, {
         name: result.name,
-        id: result.index,
+        id: result.id,
         result: result.result,
         error: result.error,
         type: result.result ? 0 : 1
       }]);
       if (result.result) {
-        setUsercnt(new Set(userCnt.add(result.index)))
+        setUsercnt(new Set(userCnt.add(result.id)))
       }
     }
     else { // string 입력
       const {data: result} = await axios.post('/user/name', {name: value.replace(/ /gi, "")})
       setHistory([...history, {
         name: result.name,
-        id: result.index,
+        id: result.id,
         result: result.result,
         error: result.error,
         type: result.result ? 0 : 1
       }]);
       if (result.result) {
-        setUsercnt(new Set(userCnt.add(result.index)))
+        setUsercnt(new Set(userCnt.add(result.id)))
       }
     }
     // setHistory([...history, log]);
@@ -99,23 +98,34 @@ function App() {
     scrollToBottom()
   };
 
+  const save = async (e) => {
+    e.preventDefault();
+    await axios.post('/save')
+    setHistory([...history, {
+      name: '',
+      id: '',
+      result: '',
+      error: '',
+      type: 3
+    }]);
+
+  }
+
   const revert = async (id, name, e) => {
     e.preventDefault()
     const {data: result} = await axios.delete('/user/id', {
-      data: {
-        index: id
-      }
+      data: { id }
     })
     setHistory([...history, {
       name: result.name,
-      id: result.index,
+      id: result.id,
       result: result.result,
       error: result.error,
       type: 2 // type 2: 취소
     }]);
 
     if (result.result) {
-      setUsercnt(new Set([...userCnt].filter(x => x != result.index)))
+      setUsercnt(new Set([...userCnt].filter(x => x != result.id)))
     }
   }
 
@@ -161,6 +171,14 @@ function App() {
                     </div>
                   )
                 }
+                else if (type == 3) {
+                  return (
+                    <div key={index} className='History-item History-item-save'>
+                      저장 완료
+                    </div>
+                  )
+
+                }
               })
             }
           </div>
@@ -170,7 +188,7 @@ function App() {
         textAlign: "end",
         fontSize: "1rem"
       }}>
-        <span>저장</span>
+        <button onClick={save}>저장</button>
       </div>
 
       <h3>입력</h3>

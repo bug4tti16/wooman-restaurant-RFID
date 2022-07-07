@@ -3,12 +3,8 @@ import Modal from 'react-modal';
 import axios from 'axios'
 
 import DatePickerCustom from './DatePicker'
-import NoticePageModal from './NoticeModal'
-
 // import '../App.css';
 import '../Modal.css'
-
-
 
 const customStyles = {
   content: {
@@ -21,13 +17,11 @@ const customStyles = {
 };
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
-export default function StartPageModal() {
+export default function NoticePageModal(props) {
   let subtitle;
-  const [modalIsOpen, setIsOpen] = React.useState(true);
-  const [startDate, setStartDate] = useState(new Date());
-
+  const [noticeModalIsOpen, setNoticeIsOpen] = React.useState(false);
   function openModal() {
-    setIsOpen(true);
+    setNoticeIsOpen(true);
   }
 
   // function afterOpenModal() {
@@ -36,7 +30,11 @@ export default function StartPageModal() {
   // }
 
   async function closeModal() {
-    setIsOpen(false);
+    setNoticeIsOpen(false);
+    props.setIsOpen(false);
+    await axios.post('/start', {
+      today: props.startDate
+    })
   }
 
   // useEffect(() => {
@@ -46,9 +44,9 @@ export default function StartPageModal() {
 
   return (
     <div >
-      {/* <button onClick={openModal}>Open Modal</button> */}
+      <button onClick={openModal}>시작하기 Notice(Fake)</button>
       <Modal
-        isOpen={modalIsOpen}
+        isOpen={noticeModalIsOpen}
         // onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
@@ -56,22 +54,17 @@ export default function StartPageModal() {
         // className='Modal-main'
       >
         <div className='Modal-Main'>
-          <p>
-            오늘 날짜를 선택하신 후, 시작 버튼을 눌러주세요
-          </p>
-          <div>
-            날짜 선택: <DatePickerCustom startDate={startDate} setStartDate={setStartDate}/>
-          </div>
-          <NoticePageModal
-            modalIsOpen={modalIsOpen}
-            setIsOpen={setIsOpen}
-            startDate={startDate}
-          />
-        </div>
-        
-      </Modal>
+          <p>식당 이용을 시작하겠습니다</p>
+          <p>카드를 찍으시는 경우 번호 입력 바랍니다</p>
+          <p>카드를 가져오시지 않은 경우 이름을 입력하거나 번호에 0을 붙쳐 입력바랍니다</p>
+          <p>작업을 취소하고 싶으면 번호에 -를 붙쳐 입력바랍니다</p>
+          <p>정보를 저장할 경우 저장 이라고 입력바랍니다</p>
+          <p>식당 운영을 마무리할 경우 끝 이라고 입력바랍니다</p>
 
-      
+          {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
+          <button onClick={closeModal}>창 닫기</button>
+        </div>
+      </Modal>
     </div>
   );
 }
