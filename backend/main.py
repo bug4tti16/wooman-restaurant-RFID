@@ -63,13 +63,12 @@ ChartNumToName = {}
 ChartNum = set()
 ChartName = set()
 
-for index, name in zip(userIndex, userList):
-    if index.isnumeric():
+for index, (id, name) in enumerate(zip(userIndex, userList)):
+    if id.isnumeric():
         stripName = "".join(name.split())
-        i = int(index)
-        ChartNumToName[i] = stripName
-        ChartNameToNum[stripName] = i
-        ChartNum.add(i)
+        ChartNumToName[int(id)] = [stripName, index] # chart index
+        ChartNameToNum[stripName] = [int(id), index]
+        ChartNum.add(int(id))
         ChartName.add(stripName)
 
 
@@ -97,16 +96,16 @@ async def get_user_type_list():
     # print(json.dumps(userList.tolist()))
     return userList.tolist()[1:]
 
-@app.get("/user/all/json")
-async def get_user_type_json():
+# @app.get("/user/all/json")
+# async def get_user_type_json():
 
-    # print(json.dumps(userList.tolist()))
+#     # print(json.dumps(userList.tolist()))
     
-    # return userChartJson
-    return JSONResponse({
-        'name': ChartNameToNum,
-        'index': ChartNumToName
-    })
+#     # return userChartJson
+#     return JSONResponse({
+#         'name': ChartNameToNum,
+#         'id': ChartNumToName
+#     })
 
 
 # @app.get("/items/{item_id}")
@@ -114,25 +113,31 @@ async def get_user_type_json():
 #     return {"item_id": item_id, "q": q}
 
 class Guest (BaseModel):
-    index: int
+    id: int
 
 # REST API
 @app.post("/user/id")
 def use_card(guest: Guest):
+    global chart
     # print(guest.index)
-    if guest.index in ChartNum:
-        # print(ChartNumToName[guest.index], guest.index)
+    if guest.id in ChartNum:
+        name = ChartNumToName[guest.id][0]
+        index = ChartNumToName[guest.id][1]
+        print(chart[index], chart[0])
+        chart[index][-1]=카드지참
+        print(chart[index])
+
         return {
             "result": True,
-            "name": ChartNumToName[guest.index],
-            "index": guest.index,
+            "name": name,
+            "id": guest.id,
             "error": 0
         }
     else:
         return {
             "result": False,
             "name": "",
-            "index": guest.index,
+            "id": guest.id,
             "error": 1
         }
 
@@ -142,21 +147,28 @@ class GuestName (BaseModel):
 
 @app.post("/user/name")
 def use_name(guestName: GuestName):
+    global chart
     if guestName.name in ChartName:
+        id = ChartNameToNum[guestName.name][0],
+        index = ChartNameToNum[guestName.name][1]
+        print(id, index)
+
+        chart[index][-1]=카드미지참
+        print(chart[index])
+
         return {
             "result": True,
             "name": guestName.name,
-            "index": ChartNameToNum[guestName.name],
+            "id": id,
             "error": 0
         }
     else:
         return {
             "result": False,
             "name": guestName.name,
-            "index": "",
+            "id": "",
             "error": 2
         }
-
 
 # 날짜 시작하기
 class DateType (BaseModel):
@@ -165,18 +177,60 @@ class DateType (BaseModel):
 
 
 @app.post("/start")
-def use_name(today: DateType):
-    print(today.today)
-    # datetime_obj = parse(today.today)
+def use_name(todayDate: DateType):
+    global chart, today, today_month, today_day
     # print(datetime_obj)
     # print(datetime_obj.date(), datetime_obj.time())
-    startDate = datetime.datetime.strptime(today.today, "%Y-%m-%dT%H:%M:%S.%fZ")
 
+    startDate = datetime.datetime.strptime(todayDate.today, "%Y-%m-%dT%H:%M:%S.%fZ")
     timezone_kst =  datetime.timezone(datetime.timedelta(hours=9))
     datetime_kst = startDate.astimezone(timezone_kst)
-    print(startDate)
-    print(datetime_kst)
+    
     print(datetime_kst.strftime("%-m_%-d"))
+
+    today=datetime_kst.strftime("%-m_%-d")
+    today_month=datetime_kst.strftime("%-m")
+    today_day=datetime_kst.strftime("%-d")
+
+    print(today, today_month, today_day)
+
+    # 진우 코드 복붙 62 ~ 93
+    if(len(chart[0])>2):
+        lastday=chart[0][len(chart[0])-1]
+        slash=lastday.find("_")
+        lastday_month=int(lastday[:slash])
+        lastday_day=int(lastday[(slash+1):])
+
+        if(lastday_month!=today_month):
+            print("새 달이 시작했습니다. 명부를 초기화하겠습니다")
+            print("지난 달의 기록은 data 폴더에서 확인하세요")
+            year=str(dt.year-int(dt.month==1))
+            df=pandas.DataFrame(chart)
+
+            
+            file_name="../data/"+year+"#"+chart[0][2]+"_to_"+chart[0][-1]+".csv"
+            df.to_csv(os.path.join(BASE_DIR, file_name),index=False,header=False, encoding='cp949')
+            f=open(os.path.join(BASE_DIR, '../user_list_new.csv'), 'r', encoding='cp949')
+            rdr = csv.reader(f)
+            chart=[line for line in rdr]
+            print("차트의 길이는 "+str(len(chart))+" 입니다")
+            print()
+            chart[0].append(today)
+            for j in range(1,len(chart)):
+                chart[j].append('')
+        else:
+            day_passed=today_day-lastday_day
+            for i in range(day_passed):
+                chart[0].append(str(dt.month)+"_"+str(lastday_day+i+1))
+                for j in range(1,len(chart)):
+                    chart[j].append('')
+    else:
+        print('시작쓰')
+        chart[0].append(today)
+        for j in range(1,len(chart)):
+            chart[j].append('')
+        print(chart)
+
     return {
         "result": True
     }
@@ -185,28 +239,45 @@ def use_name(today: DateType):
 # 취소
 @app.delete("/user/id")
 def user_revert(guest: Guest):
-    print(guest.index)
-    if guest.index in ChartNum:
-        # print(ChartNumToName[guest.index], guest.index)
+    global chart
+    print(guest.id)
+    if guest.id in ChartNum:
+
+        index = ChartNumToName[guest.id][1]
+        chart[index][-1]=''
+
+
         return {
             "result": True,
-            "name": ChartNumToName[guest.index],
-            "index": guest.index,
+            "name": ChartNumToName[guest.id][0],
+            "id": guest.id,
             "error": 3
         }
     else: # 여기에 들어갈 일 x
         return {
             "result": False,
             "name": "",
-            "index": guest.index,
+            "id": guest.id,
             "error": 1
         } 
 
 
+# 저장
+@app.post("/save")
+def save():
+    global chart
+    df = pandas.DataFrame(chart)
+    df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
+    return {
+        "result": True
+    }
 
-
+# 종료
 @app.get("/kill")
 def kill_server():
+    global chart
+    df=pandas.DataFrame(chart)
+    df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
     sys.exit()
 
 
@@ -216,7 +287,7 @@ app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "../frontend/build")
 
 # Production
 # 배포 시, 주석 풀기
-# webbrowser.open('http://localhost:8000')
-# if __name__ == "__main__":
-#     uvicorn.run(app, port=8000)
+webbrowser.open('http://localhost:8000')
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000)
     
