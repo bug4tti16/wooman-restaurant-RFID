@@ -67,20 +67,15 @@ for index, (id, name) in enumerate(zip(userIndex, userList)):
         ChartNameToNum[stripName] = [int(id), index]
 
 
-print(ChartNameToNum)
-print(ChartNumToName)
+# print(ChartNameToNum)
+# print(ChartNumToName)
 
 
 # 오늘 날짜 설정
 dt=datetime.datetime.now()
-today=str(dt.month)+"_"+str(dt.day)
 today_month=dt.month
 today_day=dt.day
-
-print(today)
-
-
-
+today=str(today_month)+"_"+str(today_day)
 
 # userChartJson = json.dumps(userChartDict, ensure_ascii=False)
 # print(json.dumps(np.array(chart)))
@@ -121,9 +116,7 @@ def use_card(guest: Guest):
     if guest.id in ChartNumToName.keys():
         name = ChartNumToName[guest.id][0]
         index = ChartNumToName[guest.id][1]
-        print(chart[index], chart[0])
         chart[index][-1]=카드지참
-        print(chart[index])
 
         return {
             "result": True,
@@ -149,10 +142,7 @@ def use_name(guestName: GuestName):
     if guestName.name in ChartNameToNum.keys():
         id = ChartNameToNum[guestName.name][0],
         index = ChartNameToNum[guestName.name][1]
-        print(id, index)
-
         chart[index][-1]=카드미지참
-        print(chart[index])
 
         return {
             "result": True,
@@ -183,12 +173,15 @@ def use_name(todayDate: DateType):
     startDate = datetime.datetime.strptime(todayDate.today, "%Y-%m-%dT%H:%M:%S.%fZ")
     timezone_kst =  datetime.timezone(datetime.timedelta(hours=9))
     datetime_kst = startDate.astimezone(timezone_kst)
-    
-    print(datetime_kst.strftime("%-m_%-d"))
 
-    today=datetime_kst.strftime("%-m_%-d")
-    today_month=datetime_kst.strftime("%-m")
-    today_day=datetime_kst.strftime("%-d")
+    today_month = datetime_kst.month
+    today_day = datetime_kst.day
+    today= str(today_month) + '_' + str(today_day)
+
+    # Windows에서 작동 안됨
+    # datetime_kst.strftime("%-m_%-d")
+    # today_month=datetime_kst.strftime("%-m")
+    # today_day=datetime_kst.strftime("%-d")
 
     print(today, today_month, today_day)
 
@@ -212,7 +205,6 @@ def use_name(todayDate: DateType):
             rdr = csv.reader(f)
             chart=[line for line in rdr]
             print("차트의 길이는 "+str(len(chart))+" 입니다")
-            print()
             chart[0].append(today)
             for j in range(1,len(chart)):
                 chart[j].append('')
@@ -223,7 +215,6 @@ def use_name(todayDate: DateType):
                 for j in range(1,len(chart)):
                     chart[j].append('')
     else:
-        print('시작쓰')
         chart[0].append(today)
         for j in range(1,len(chart)):
             chart[j].append('')
@@ -276,15 +267,15 @@ def kill_server():
     global chart
     df=pandas.DataFrame(chart)
     df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
-    sys.exit()
+    if sys.platform == 'win32':
+        os.system('taskkill /f /im python.exe')
 
 
 # SPA React Render
 app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "../frontend/build"), html = True), name="static")
 
-
 # Production
 # 배포 시, 주석 풀기
-# webbrowser.open('http://localhost:8000')
-# if __name__ == "__main__":
-#     uvicorn.run(app, port=8000)
+webbrowser.open('http://localhost:8000')
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000)
