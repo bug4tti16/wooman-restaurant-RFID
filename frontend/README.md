@@ -1,18 +1,21 @@
-https://codesandbox.io/s/react-autosuggest-example-with-hooks-mreii?file=/src/styles.css:0-1128
+# 우만종합사회복지관 경로 식당
 
+## 준비물
+- nodejs 16.15.1
 
+## 필수 모듈 설치하기
 
-만들 것
+```powershell
+npm install
+```
 
-1. 성공 시 초록색 글씨로 history에, ~번 ~님 초록색 글씨 출력
+## 개발 모드
+```powershell
+npm run dev
+```
 
-2. 실패 시 우측에 사유와 함께 적을 것
-
-3. autoSave 구현
-
-4. 시작 시 날짜 선택할 수 있도록 할 것 (modal )
-
-    => Datepicker 처럼 날짜를 선택할 수 있도록 할 것
-
-
-5. 디자인 툴은 Ant Design 사용, 
+## 배포 시 해야할 것
+- python으로 서버를 열기 전에, build만 해주면 됨
+    ```powershell
+    npm run build
+    ```

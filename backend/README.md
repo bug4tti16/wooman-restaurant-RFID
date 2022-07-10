@@ -1,34 +1,20 @@
-python -m uvicorn main:app --reload --port 8000
+# 우만종합사회복지관 경로 식당
 
+## 준비물
+- python 3.8.10
+
+## 필수 모듈 설치하기
+
+```powershell
 pip install -r requirements.txt
+```
 
-<!-- 
-python3 -c "import py_compile; py_compile.compile(r'main.py', cfile='output.py')"
-python -m uvicorn output:app --reload --port 8080
+## 개발 서버 키는 방법
+```powershell
+python -m uvicorn main:app --reload --port 8000
+```
 
-python3 Main.py -->
-
-
-
-C:\Users\Lucia\AppData\Local\Programs\Python\Python38\python.exe -m  uvicorn main:app --reload --port 8000
-
-C:\Users\Lucia\AppData\Local\Programs\Python\Python38\python.exe "C:\Users\Lucia\dev\wooman-restaurant-master\backend\main.py"
-
-
- -c python C:\Users\Lucia\dev\wooman-restaurant-master\backend\main.py 
-
-
- C:\Users\Lucia\AppData\Local\Programs\Python\Python38\python.exe "C:\Users\Lucia\dev\wooman-restaurant-master\backend\main.py"
-
-
-
-환경변수로 하자
-
-%USERPROFILE%\AppData\Local\Programs\Python\Python38\python.exe "%USERPROFILE%\dev\wooman-restaurant-master\backend\main.py"
-
-
-케바케인듯 알아서 찾아서 만들 것
-C:\Python38\python.exe C:\Users\kuna\Dev\wooman-restaurant\backend\main.py
-
-
-%USERPROFILE%\AppData\Local\Programs\Python\Python38\python.exe  C:\Users\kuna\Dev\wooman-restaurant\backend\main.py
+## 실행 방법
+```powershell
+python main.py
+```
