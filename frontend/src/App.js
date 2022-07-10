@@ -80,6 +80,18 @@ function App() {
         setUsercnt(new Set(userCnt.add(result.id)))
       }
     }
+    else if (value == '끝') {
+      alert('확인을 누르면 프로그램이 종료됩니다.')
+      try {
+        await axios({
+          method: 'get',
+          url: '/kill',
+          timeout: 100
+        })
+      } finally {
+        window.close()
+      }
+    }
     else { // string 입력
       const {data: result} = await axios.post('/user/name', {name: value.replace(/ /gi, "")})
       setHistory([...history, {
