@@ -40,9 +40,9 @@ function App() {
 
   useEffect(() => {
     async function fetchAPI() {
-      const result = await axios.get('/user/all/list')
+      const { data: result } = await axios.get('/user/all/list')
       // const result2 = await axios.get('/user/all/json')
-      setUserdata(result.data)
+      setUserdata(result)
       // setChartName(result2?.data?.name)
       // setChartIndex(result2?.data?.index)
     }
@@ -55,7 +55,9 @@ function App() {
   },[history])
 
   function getSuggestions(value) {  
-    return userData.filter(name => name.includes(value.trim().toLowerCase()));
+    return userData.filter(
+      ({_, name}) => name.includes(value.trim().toLowerCase())
+    );
   }
 
 
@@ -236,11 +238,9 @@ function App() {
           setValue(value);
           setSuggestions(getSuggestions(value));
         }}
-        getSuggestionValue={suggestion => suggestion}
-        renderSuggestion={suggestion => (<span>{suggestion}</span>)
-        }
+        getSuggestionValue={({_, name}) => name}
+        renderSuggestion={({id, name: suggestion}) => (<span>{suggestion}({id})</span>)}
         inputProps={{
-
           placeholder: `카드 번호 또는 이름을 입력해주세요`, 
 
           // 식당 이용을 시작하겠습니다

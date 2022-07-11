@@ -65,12 +65,14 @@ userIndex = np.array(chart).T[0]
 # User Json 생성
 ChartNameToNum = {}
 ChartNumToName = {}
+ChartList = []
 
 for index, (id, name) in enumerate(zip(userIndex, userList)):
     if id.isnumeric():
         stripName = "".join(name.split())
         ChartNumToName[int(id)] = [stripName, index] # chart index
         ChartNameToNum[stripName] = [int(id), index]
+        ChartList.append({'id': int(id), 'name': stripName})
 
 
 # print(ChartNameToNum)
@@ -93,7 +95,7 @@ today=str(today_month)+"_"+str(today_day)
 @app.get("/user/all/list")
 async def get_user_type_list():
     # print(json.dumps(userList.tolist()))
-    return userList.tolist()[1:]
+    return ChartList
 
 # @app.get("/user/all/json")
 # async def get_user_type_json():
