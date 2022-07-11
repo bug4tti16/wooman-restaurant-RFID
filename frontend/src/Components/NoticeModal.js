@@ -43,8 +43,18 @@ export default function NoticePageModal(props) {
   // }, [startDate])
 
   return (
-    <div >
-      <button onClick={openModal}>시작하기 Notice(Fake)</button>
+    <div style={{
+      display: "flex",
+      justifyContent: "Center",
+      alignItems: "center"
+    }}>
+      <button
+       onClick={openModal}
+       style={{
+        width: "100px",
+        height: "30px"
+       }}
+      >시작하기</button>
       <Modal
         isOpen={noticeModalIsOpen}
         // onAfterOpen={afterOpenModal}
@@ -54,15 +64,27 @@ export default function NoticePageModal(props) {
         // className='Modal-main'
       >
         <div className='Modal-Main'>
-          <p>식당 이용을 시작하겠습니다</p>
-          <p>카드를 찍으시는 경우 번호 입력 바랍니다</p>
-          <p>카드를 가져오시지 않은 경우 이름을 입력하거나 번호에 0을 붙쳐 입력바랍니다</p>
-          <p>작업을 취소하고 싶으면 번호에 -를 붙쳐 입력바랍니다</p>
-          <p>정보를 저장할 경우 저장 이라고 입력바랍니다</p>
-          <p>식당 운영을 마무리할 경우 끝 이라고 입력바랍니다</p>
+          <h2>경로 식당 이용을 시작하겠습니다</h2>
+          <h4>카드를 찍으시는 경우 번호 입력 바랍니다</h4>
+          <h4>카드를 가져오시지 않은 경우, 이름을 입력해주세요</h4>
+          <h4>작업을 취소하고 싶으면 취소 버튼을 눌러주세요</h4>
+          <h4>정보를 저장할 경우 저장 버튼을 눌러주세요</h4>
+          <h4>식당 운영을 마무리할 경우 종료 버튼을 누르거나 혹은 종료라고 입력바랍니다</h4>
 
           {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
-          <button onClick={closeModal}>창 닫기</button>
+          <div style={{
+            display: "flex",
+            justifyContent: "Center",
+            alignItems: "center"
+          }}>
+            <button
+            onClick={closeModal}
+            style={{
+              width: "100px",
+              height: "30px"
+            }}
+            >창 닫기</button>
+          </div>
         </div>
       </Modal>
     </div>

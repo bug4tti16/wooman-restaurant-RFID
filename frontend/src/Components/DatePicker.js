@@ -6,7 +6,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 export default function DatePickerCustom(props) {
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => {
-    console.log('ExampleCustomInput', value)
     return (
       <button className="example-custom-input" onClick={onClick} ref={ref}>
         {value}
