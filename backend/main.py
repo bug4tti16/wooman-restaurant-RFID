@@ -118,7 +118,6 @@ class Guest (BaseModel):
 @app.post("/user/id")
 def use_card(guest: Guest):
     global chart
-    # print(guest.index)
     if guest.id in ChartNumToName.keys():
         name = ChartNumToName[guest.id][0]
         index = ChartNumToName[guest.id][1]
@@ -161,10 +160,9 @@ class GuestName (BaseModel):
 def use_name(guestName: GuestName):
     global chart
     if guestName.name in ChartNameToNum.keys():
-        id = ChartNameToNum[guestName.name][0],
+        id = ChartNameToNum[guestName.name][0]
         index = ChartNameToNum[guestName.name][1]
         chart[index][-1]=카드미지참
-
 
         cache.append({
             "result": True,
@@ -205,7 +203,6 @@ class DateType (BaseModel):
 @app.get("/prestart")
 def pre_start():
     global cacheDate, cache
-    print(cacheDate, cache)
     if cacheDate == '' or len(cache) == 0:
         # 이전 기록 없음
         return {
@@ -215,8 +212,6 @@ def pre_start():
         "result": True,
         "cache": cache
     }
-
-    print(cache)
     
 
 
