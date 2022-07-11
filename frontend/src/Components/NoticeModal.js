@@ -59,6 +59,7 @@ export default function NoticePageModal(props) {
         isOpen={noticeModalIsOpen}
         // onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
+        ariaHideApp={false}
         style={customStyles}
         // contentLabel="Example Modal"
         // className='Modal-main'

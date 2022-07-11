@@ -97,6 +97,7 @@ export default function StartPageModal(props) {
         // onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
+        ariaHideApp={false}
         // contentLabel="Example Modal"
         // className='Modal-main'
       >
