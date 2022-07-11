@@ -81,16 +81,7 @@ function App() {
       }
     }
     else if (value == '끝') {
-      alert('확인을 누르면 프로그램이 종료됩니다.')
-      try {
-        await axios({
-          method: 'get',
-          url: '/kill',
-          timeout: 100
-        })
-      } finally {
-        window.close()
-      }
+      kill()
     }
     else { // string 입력
       const {data: result} = await axios.post('/user/name', {name: value.replace(/ /gi, "")})
@@ -120,7 +111,24 @@ function App() {
       error: '',
       type: 3
     }]);
+  }
 
+  function onClose() {
+    window.open("about:blank", "_self").close();
+  }
+
+  const kill = async (e) => {
+    // e.preventDefault();
+    alert('확인을 누르면 프로그램이 종료됩니다.\n빈 창이 뜨는 경우, 창을 직접 닫아주십시오.\n')
+    try {
+      await axios({
+        method: 'get',
+        url: '/kill',
+        timeout: 100
+      })
+    } finally {
+      onClose()
+    }
   }
 
   const revert = async (id, name, e) => {
@@ -144,10 +152,6 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
-        {/* <img src={'https://www.wooman.or.kr/images/comm/logo.gif'} className="App-logo" alt="logo" />
-        <p>
-          경로 식당 입장 입력기
-        </p> */}
       <h1 style={{margin: "10px"}}>우만종합사회복지관</h1>
       <h2>경로 식당</h2>
       
@@ -196,11 +200,27 @@ function App() {
           </div>
       </div>
       <div style={{
-        width: "80%",
         textAlign: "end",
-        fontSize: "1rem"
+        fontSize: "1rem",
+        width: "80%",
+        marginTop: "10px"
       }}>
-        <button onClick={save}>저장</button>
+        <button
+        onClick={kill}
+         style={{
+          width: "100px",
+          height: "30px",
+          float: "left"
+         }}
+         >종료</button>
+        <button
+         onClick={save}
+         style={{
+          width: "100px",
+          height: "30px",
+          float: "right"
+         }}
+         >저장</button>
       </div>
 
       <h3>입력</h3>
@@ -235,12 +255,11 @@ function App() {
       />
       </form>
 
-      <StartPageModal />
-
-
-      
-
-      </div>      
+      <StartPageModal
+        history={history}
+        setHistory={setHistory}
+      />
+      </div>
     </div>
   );
 }
