@@ -41,6 +41,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Cache
+# 창을 끄거나, 새로고침을 한 경우, 기존 기록 불러오기
+# 단, python을 종료했을 시에는 소멸
+cache = []
+cacheDate = ''
+
 # csv 파일 open
 f=open(os.path.join(BASE_DIR, "../user_list.csv"),'r', encoding='cp949')
 rdr = csv.reader(f)
@@ -117,6 +123,13 @@ def use_card(guest: Guest):
         name = ChartNumToName[guest.id][0]
         index = ChartNumToName[guest.id][1]
         chart[index][-1]=카드지참
+        cache.append({
+            "result": True,
+            "name": name,
+            "id": guest.id,
+            "error": 0,
+            "type": 0
+        })
 
         return {
             "result": True,
@@ -125,6 +138,14 @@ def use_card(guest: Guest):
             "error": 0
         }
     else:
+        cache.append({
+            "result": False,
+            "name": "",
+            "id": guest.id,
+            "error": 1,
+            "type": 1
+        })
+
         return {
             "result": False,
             "name": "",
@@ -144,6 +165,15 @@ def use_name(guestName: GuestName):
         index = ChartNameToNum[guestName.name][1]
         chart[index][-1]=카드미지참
 
+
+        cache.append({
+            "result": True,
+            "name": guestName.name,
+            "id": id,
+            "error": 0,
+            "type": 0
+        })
+
         return {
             "result": True,
             "name": guestName.name,
@@ -151,6 +181,15 @@ def use_name(guestName: GuestName):
             "error": 0
         }
     else:
+
+        cache.append({
+            "result": False,
+            "name": guestName.name,
+            "id": "",
+            "error": 2,
+            "type": 1
+        })
+
         return {
             "result": False,
             "name": guestName.name,
@@ -163,10 +202,27 @@ class DateType (BaseModel):
     today: str
 
 
+@app.get("/prestart")
+def pre_start():
+    global cacheDate, cache
+    print(cacheDate, cache)
+    if cacheDate == '' or len(cache) == 0:
+        # 이전 기록 없음
+        return {
+            "result": False
+        }
+    return {
+        "result": True,
+        "cache": cache
+    }
+
+    print(cache)
+    
+
 
 @app.post("/start")
 def use_name(todayDate: DateType):
-    global chart, today, today_month, today_day
+    global chart, today, today_month, today_day, cacheDate
     # print(datetime_obj)
     # print(datetime_obj.date(), datetime_obj.time())
 
@@ -177,6 +233,7 @@ def use_name(todayDate: DateType):
     today_month = datetime_kst.month
     today_day = datetime_kst.day
     today= str(today_month) + '_' + str(today_day)
+    cacheDate = today
 
     # Windows에서 작동 안됨
     # datetime_kst.strftime("%-m_%-d")
@@ -235,6 +292,15 @@ def user_revert(guest: Guest):
         index = ChartNumToName[guest.id][1]
         chart[index][-1]=''
 
+        cache.append({
+            "result": True,
+            "name": ChartNumToName[guest.id][0],
+            "id": guest.id,
+            "error": 3,
+            "type": 2
+        })
+
+
 
         return {
             "result": True,
@@ -243,6 +309,15 @@ def user_revert(guest: Guest):
             "error": 3
         }
     else: # 여기에 들어갈 일 x
+
+        cache.append({
+            "result": False,
+            "name": "",
+            "id": guest.id,
+            "error": 1,
+            "type": 2
+        })
+
         return {
             "result": False,
             "name": "",
@@ -269,6 +344,8 @@ def kill_server():
     df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
     if sys.platform == 'win32':
         os.system('taskkill /f /im python.exe')
+    else:
+        os.system("killall python")
 
 
 # SPA React Render

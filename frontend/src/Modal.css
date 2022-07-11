@@ -4,6 +4,7 @@
     height: 80vh;
     font-size: calc(10px + 2vmin);
     color: white;
-    text-align: center;
+    text-align: start;
     display: block;
+    padding: 0 10% 0 10%;
 }
