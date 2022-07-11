@@ -119,6 +119,9 @@ function App() {
 
   const kill = async (e) => {
     // e.preventDefault();
+    if (!window.confirm("정말로 종료하시겠습니까?")) {
+      return
+    }
     alert('확인을 누르면 프로그램이 종료됩니다.\n빈 창이 뜨는 경우, 창을 직접 닫아주십시오.\n')
     try {
       await axios({
