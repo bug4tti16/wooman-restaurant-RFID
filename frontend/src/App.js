@@ -1,5 +1,3 @@
-import logo from './logo.svg';
-
 import './App.css';
 
 import { useEffect, useState, useRef } from 'react';
@@ -64,7 +62,7 @@ function App() {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (typeof(value) != "string" || value.length == 0) {
+    if (typeof(value) != "string" || value.length === 0) {
       return;
     }
 
@@ -82,7 +80,7 @@ function App() {
         setUsercnt(new Set(userCnt.add(result.id)))
       }
     }
-    else if (value == '끝') {
+    else if (value === '끝') {
       kill()
     }
     else { // string 입력
@@ -150,7 +148,7 @@ function App() {
     }]);
 
     if (result.result) {
-      setUsercnt(new Set([...userCnt].filter(x => x != result.id)))
+      setUsercnt(new Set([...userCnt].filter(x => x !== result.id)))
     }
   }
 
@@ -171,28 +169,28 @@ function App() {
               history.map(({
                 name, id, result, error, type
               }, index) => {
-                if (type == 0) {
+                if (type === 0) {
                   return (
                   <div key={index} className='History-item History-item-success'> 
                       <span style={{}}>{id}번 {name}</span> 확인완료 <button className='History-revert-button' onClick={(e) => {revert(id, name, e)}}>취소</button>
                   </div>
                   )
                 }
-                else if (type == 1) {
+                else if (type === 1) {
                   return (
                   <div key={index} className='History-item History-item-fail'>
                     <span style={{}}>{id || name}</span> ({errorCode[error]})
                   </div>
                   )
                 }
-                else if (type == 2) {
+                else if (type === 2) {
                   return (
                     <div key={index} className='History-item History-item-revert'>
                       <span style={{}}>{id}번 {name}</span> 취소완료
                     </div>
                   )
                 }
-                else if (type == 3) {
+                else if (type === 3) {
                   return (
                     <div key={index} className='History-item History-item-save'>
                       저장 완료
