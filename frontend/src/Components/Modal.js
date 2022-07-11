@@ -48,8 +48,18 @@ export default function StartPageModal(props) {
       if (result) {
         // setPreHistory(true)
         if (window.confirm("이전 기록이 있습니다. 불러오시겠습니까?")) {
-
           props.setHistory(cache);
+          
+          let newUserCnt = new Set()
+          for (const item of cache) {
+            if (item.type === 0) {
+              newUserCnt.add(item.id)
+            }
+            else if (item.type === 2) {
+              newUserCnt = new Set([...newUserCnt].filter(x => x != item.id))
+            }
+          }
+          props.setUsercnt(newUserCnt)
           closeModal()
         }
         else {

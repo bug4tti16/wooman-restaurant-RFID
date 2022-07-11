@@ -261,6 +261,8 @@ function App() {
       <StartPageModal
         history={history}
         setHistory={setHistory}
+        userCnt={userCnt}
+        setUsercnt={setUsercnt}
       />
       </div>
     </div>
