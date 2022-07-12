@@ -62,7 +62,6 @@ function App() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
     if (typeof(value) != "string" || value.length === 0) {
       return;
     }
@@ -81,8 +80,11 @@ function App() {
         setUsercnt(new Set(userCnt.add(result.id)))
       }
     }
-    else if (value === '끝') {
+    else if (["끝","꿑","finish","종료","ㄲ","Rmx","rMX"].includes(value)) {
       Checkkill()
+    }
+    else if (["저장","save","ㅈㅈ","ww","WW"].includes(value)) {
+      save()
     }
     else { // string 입력
       const {data: result} = await axios.post('/user/name', {name: value.replace(/ /gi, "")})
@@ -102,8 +104,7 @@ function App() {
     scrollToBottom()
   };
 
-  const save = async (e) => {
-    e.preventDefault();
+  const save = async () => {
     await axios.post('/save')
     setHistory([...history, {
       name: '',
