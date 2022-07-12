@@ -20,8 +20,27 @@ const customStyles = {
 export default function NoticePageModal(props) {
   let subtitle;
   const [noticeModalIsOpen, setNoticeIsOpen] = React.useState(false);
-  function openModal() {
-    setNoticeIsOpen(true);
+  const [noticeChangeMonthModalIsOpen, setMonthModalIsOpen] = React.useState(false);
+  const [userNum, setNum] = React.useState(0);
+
+  async function openModal() {
+
+    const { data: { notice, num } } = await axios.post('/start', {
+      today: props.startDate
+    })
+    console.log(notice)
+    if (notice) {
+      setNum(num)
+      openMonthModal() // Modal 2 open
+
+    }
+    else {
+      setNoticeIsOpen(true);
+    }
+  }
+
+  function openMonthModal() {
+    setMonthModalIsOpen(true);
   }
 
   // function afterOpenModal() {
@@ -31,10 +50,13 @@ export default function NoticePageModal(props) {
 
   async function closeModal() {
     setNoticeIsOpen(false);
+    setMonthModalIsOpen(false);
     props.setIsOpen(false);
-    await axios.post('/start', {
-      today: props.startDate
-    })
+  }
+
+  async function closeMonthModal() {
+    setMonthModalIsOpen(false);
+    setNoticeIsOpen(true);
   }
 
   // useEffect(() => {
@@ -88,6 +110,43 @@ export default function NoticePageModal(props) {
           </div>
         </div>
       </Modal>
+
+
+      <Modal
+        isOpen={noticeChangeMonthModalIsOpen}
+        // onAfterOpen={afterOpenModal}
+        onRequestClose={closeMonthModal}
+        ariaHideApp={false}
+        style={customStyles}
+        // contentLabel="Example Modal"
+        // className='Modal-main'
+      >
+        <div className='Modal-Main'>
+          <h2 style={{textAlign: 'center'}}>공지</h2>
+          <h4>새 달이 시작했습니다. 명부를 초기화하였습니다.</h4>
+          <h4>지난 달의 기록은 'data' 폴더에서 확인바랍니다.</h4>
+          <h4>'user_list_new.csv'에서 회원 명단을 불러왔습니다.</h4>
+          <h4>차트의 길이는 {userNum} 입니다.</h4>
+
+
+          {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
+          <div style={{
+            display: "flex",
+            justifyContent: "Center",
+            alignItems: "center"
+          }}>
+            <button
+            onClick={closeMonthModal}
+            style={{
+              width: "100px",
+              height: "30px"
+            }}
+            >창 닫기</button>
+          </div>
+        </div>
+      </Modal>
+
+      
     </div>
   );
 }

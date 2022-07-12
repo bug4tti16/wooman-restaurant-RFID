@@ -246,9 +246,9 @@ def use_name(todayDate: DateType):
         lastday_month=int(lastday[:slash])
         lastday_day=int(lastday[(slash+1):])
 
+        print(lastday, today_month)
+
         if(lastday_month!=today_month):
-            print("새 달이 시작했습니다. 명부를 초기화하겠습니다")
-            print("지난 달의 기록은 data 폴더에서 확인하세요")
             year=str(dt.year-int(dt.month==1))
             df=pandas.DataFrame(chart)
 
@@ -258,25 +258,34 @@ def use_name(todayDate: DateType):
             f=open(os.path.join(BASE_DIR, '../user_list_new.csv'), 'r', encoding='cp949')
             rdr = csv.reader(f)
             chart=[line for line in rdr]
-            print("차트의 길이는 "+str(len(chart))+" 입니다")
+
             chart[0].append(today)
             for j in range(1,len(chart)):
                 chart[j].append('')
+
+            return {
+                "notice": True,
+                "num": len(chart)
+            }
         else:
             day_passed=today_day-lastday_day
             for i in range(day_passed):
                 chart[0].append(str(dt.month)+"_"+str(lastday_day+i+1))
                 for j in range(1,len(chart)):
                     chart[j].append('')
+            return {
+                "notice": False
+            }
     else:
         chart[0].append(today)
         for j in range(1,len(chart)):
             chart[j].append('')
-        print(chart)
 
-    return {
-        "result": True
-    }
+        return {
+            "notice": False
+        }
+
+    
 
 
 # 취소
