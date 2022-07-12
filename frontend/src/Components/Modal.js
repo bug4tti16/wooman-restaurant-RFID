@@ -4,6 +4,7 @@ import axios from 'axios'
 
 import DatePickerCustom from './DatePicker'
 import NoticePageModal from './NoticeModal'
+import Kill from '../Api/Kill'
 
 // import '../App.css';
 import '../Modal.css'
@@ -32,6 +33,23 @@ export default function StartPageModal(props) {
     setIsOpen(false);
   }
 
+  async function resetChart() {
+
+    const {data: {result, file} } = await axios.post('/user/reset')
+    console.log(result, file)
+    if (result) {
+      alert(
+        `정상적으로 'user_list.csv'파일이 초기화 되었으며,\ndata/${file} 파일에 백업되었습니다.\n
+        `
+      )
+    }
+    else {
+      alert("이미 초기화된 상태입니다.")
+    }
+    alert("확인을 누르면 프로그램이 종료됩니다.\n빈 창이 뜨는 경우, 창을 직접 닫아주십시오.")
+    Kill()
+  }
+
   useEffect(() => {
     async function getCache() {
       const {data: {
@@ -56,23 +74,8 @@ export default function StartPageModal(props) {
           closeModal()
         }
         else {
-          function onClose() {
-            window.open("about:blank", "_self").close();
-          }
-          const kill = async (e) => {
-            // e.preventDefault();
-            alert("서버를 종료합니다. 다시 시작해주세요.")
-            try {
-              await axios({
-                method: 'get',
-                url: '/kill',
-                timeout: 100
-              })
-            } finally {
-              onClose()
-            }
-          }
-          kill()
+          alert("서버를 종료합니다. 다시 시작해주세요.")
+          Kill()
         }
       }
     }
@@ -106,6 +109,19 @@ export default function StartPageModal(props) {
               setStartDate={setStartDate}
               /> 
             </h4>
+
+            <h4  style={{marginTop: "0px", marginBottom: "5px"}}> 유저 명단 초기화:</h4>
+              <h5 style={{marginTop: "0px", marginBottom: "5px"}}>('user_list_new.csv'을'user_list.csv'에 덮어씁니다.)</h5>
+              <h5 style={{marginTop: "0px",  marginBottom: "0px"}}>(명단이 변경된 경우, 초기화 버튼을 눌러주십시오.)</h5>
+              <button
+                onClick={resetChart}
+                style={{
+                  width: "100px",
+                  height: "30px",
+                  marginBottom: "40px"
+                }}
+              >초기화</button>
+            
           </div>
 
           <NoticePageModal

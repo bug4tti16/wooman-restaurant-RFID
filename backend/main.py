@@ -91,6 +91,35 @@ today=str(today_month)+"_"+str(today_day)
 # def getTest():
 #     return ['dsa', 'fde', 'feds']
 
+@app.post("/user/reset")
+async def get_user_type_list():
+    global chart
+    if(len(chart[0])==2):
+        return {
+            "result": False
+        }
+    
+    year=str(dt.year)
+    df=pandas.DataFrame(chart)            
+    file_name= year+"#"+chart[0][2]+"_to_"+chart[0][-1]+".csv"
+    print(file_name)
+    
+    df.to_csv(os.path.join(BASE_DIR, "../data/" + file_name),index=False,header=False, encoding='cp949')
+
+
+    f=open(os.path.join(BASE_DIR, '../user_list_new.csv'), 'r', encoding='cp949')
+    rdr = csv.reader(f)
+    chart=[line for line in rdr]
+    df=pandas.DataFrame(chart)
+    df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
+
+    return {
+        "result": True,
+        "file": file_name
+    }
+
+
+
 # 경로 식당 유저 목록
 @app.get("/user/all/list")
 async def get_user_type_list():
