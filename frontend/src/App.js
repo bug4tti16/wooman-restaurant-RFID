@@ -9,6 +9,7 @@ import axios from 'axios'
 
 import errorCode from './errorCode.json'
 import StartPageModal from './Components/Modal'
+import Kill from './Api/Kill'
 
 function App() {
 
@@ -81,7 +82,7 @@ function App() {
       }
     }
     else if (value === '끝') {
-      kill()
+      Checkkill()
     }
     else { // string 입력
       const {data: result} = await axios.post('/user/name', {name: value.replace(/ /gi, "")})
@@ -113,25 +114,13 @@ function App() {
     }]);
   }
 
-  function onClose() {
-    window.open("about:blank", "_self").close();
-  }
-
-  const kill = async (e) => {
+  const Checkkill = async (e) => {
     // e.preventDefault();
     if (!window.confirm("정말로 종료하시겠습니까?")) {
       return
     }
     alert('확인을 누르면 프로그램이 종료됩니다.\n빈 창이 뜨는 경우, 창을 직접 닫아주십시오.\n')
-    try {
-      await axios({
-        method: 'get',
-        url: '/kill',
-        timeout: 100
-      })
-    } finally {
-      onClose()
-    }
+    Kill()
   }
 
   const revert = async (id, name, e) => {
@@ -209,7 +198,7 @@ function App() {
         marginTop: "10px"
       }}>
         <button
-        onClick={kill}
+        onClick={Checkkill}
          style={{
           width: "100px",
           height: "30px",
