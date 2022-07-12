@@ -9,6 +9,8 @@ import Kill from '../Api/Kill'
 // import '../App.css';
 import '../Modal.css'
 
+import errorCode from '../errorCode.json'
+
 const customStyles = {
   content: {
     top: '0%',
@@ -35,7 +37,7 @@ export default function StartPageModal(props) {
 
   async function resetChart() {
 
-    const {data: {result, file} } = await axios.post('/user/reset')
+    const {data: {result, file, error} } = await axios.post('/user/reset')
     console.log(result, file)
     if (result) {
       alert(
@@ -44,7 +46,13 @@ export default function StartPageModal(props) {
       )
     }
     else {
-      alert("이미 초기화된 상태입니다.")
+      if (error === 0) {
+        alert("이미 초기화된 상태입니다.")
+      }
+      else if (error === 4 || error === 5) {
+        alert(errorCode[error])
+      }
+      
     }
     alert("확인을 누르면 프로그램이 종료됩니다.\n빈 창이 뜨는 경우, 창을 직접 닫아주십시오.")
     Kill()

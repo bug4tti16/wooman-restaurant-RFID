@@ -4,6 +4,8 @@ import axios from 'axios'
 
 // import '../App.css';
 import '../Modal.css'
+import errorCode from '../errorCode.json'
+import Kill from '../Api/Kill'
 
 const customStyles = {
   content: {
@@ -23,7 +25,7 @@ export default function NoticePageModal(props) {
 
   async function openModal() {
 
-    const { data: { notice, num } } = await axios.post('/start', {
+    const { data: { notice, num, error } } = await axios.post('/start', {
       today: props.startDate
     })
     console.log(notice)
@@ -33,6 +35,10 @@ export default function NoticePageModal(props) {
 
     }
     else {
+      if (error === 4 || error === 5) {
+        alert(errorCode[error])
+        Kill()
+      }
       setNoticeIsOpen(true);
     }
   }

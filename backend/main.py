@@ -93,30 +93,44 @@ today=str(today_month)+"_"+str(today_day)
 
 @app.post("/user/reset")
 async def get_user_type_list():
-    global chart
-    if(len(chart[0])==2):
+    try:
+        global chart
+        if(len(chart[0])==2):
+            return {
+                "result": False,
+                "error": 0
+            }
+        
+        year=str(dt.year)
+        df=pandas.DataFrame(chart)            
+        file_name= year+"#"+chart[0][2]+"_to_"+chart[0][-1]+".csv"
+        print(file_name)
+        
+        df.to_csv(os.path.join(BASE_DIR, "../data/" + file_name),index=False,header=False, encoding='cp949')
+
+
+        f=open(os.path.join(BASE_DIR, '../user_list_new.csv'), 'r', encoding='cp949')
+        rdr = csv.reader(f)
+        chart=[line for line in rdr]
+        df=pandas.DataFrame(chart)
+        df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
+
         return {
-            "result": False
+            "result": True,
+            "file": file_name
         }
-    
-    year=str(dt.year)
-    df=pandas.DataFrame(chart)            
-    file_name= year+"#"+chart[0][2]+"_to_"+chart[0][-1]+".csv"
-    print(file_name)
-    
-    df.to_csv(os.path.join(BASE_DIR, "../data/" + file_name),index=False,header=False, encoding='cp949')
-
-
-    f=open(os.path.join(BASE_DIR, '../user_list_new.csv'), 'r', encoding='cp949')
-    rdr = csv.reader(f)
-    chart=[line for line in rdr]
-    df=pandas.DataFrame(chart)
-    df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
-
-    return {
-        "result": True,
-        "file": file_name
-    }
+    except PermissionError:
+        return {
+            "result": False,
+            "file": file_name,
+            "error": 4
+        }
+    except:
+        return {
+            "result": False,
+            "file": file_name,
+            "error": 5
+        }
 
 
 
@@ -252,68 +266,78 @@ def use_name(todayDate: DateType):
     # print(datetime_obj)
     # print(datetime_obj.date(), datetime_obj.time())
 
-    startDate = datetime.datetime.strptime(todayDate.today, "%Y-%m-%dT%H:%M:%S.%fZ")
-    timezone_kst =  datetime.timezone(datetime.timedelta(hours=9))
-    datetime_kst = startDate.astimezone(timezone_kst)
+    try:
+        startDate = datetime.datetime.strptime(todayDate.today, "%Y-%m-%dT%H:%M:%S.%fZ")
+        timezone_kst =  datetime.timezone(datetime.timedelta(hours=9))
+        datetime_kst = startDate.astimezone(timezone_kst)
 
-    today_month = datetime_kst.month
-    today_day = datetime_kst.day
-    today= str(today_month) + '_' + str(today_day)
-    cacheDate = today
+        today_month = datetime_kst.month
+        today_day = datetime_kst.day
+        today= str(today_month) + '_' + str(today_day)
+        cacheDate = today
 
-    # Windows에서 작동 안됨
-    # datetime_kst.strftime("%-m_%-d")
-    # today_month=datetime_kst.strftime("%-m")
-    # today_day=datetime_kst.strftime("%-d")
+        # Windows에서 작동 안됨
+        # datetime_kst.strftime("%-m_%-d")
+        # today_month=datetime_kst.strftime("%-m")
+        # today_day=datetime_kst.strftime("%-d")
 
-    # print(today, today_month, today_day)
+        # print(today, today_month, today_day)
 
-    # 진우 코드 복붙 62 ~ 93
-    if(len(chart[0])>2):
-        lastday=chart[0][len(chart[0])-1]
-        slash=lastday.find("_")
-        lastday_month=int(lastday[:slash])
-        lastday_day=int(lastday[(slash+1):])
+        # 진우 코드 복붙 62 ~ 93
+        if(len(chart[0])>2):
+            lastday=chart[0][len(chart[0])-1]
+            slash=lastday.find("_")
+            lastday_month=int(lastday[:slash])
+            lastday_day=int(lastday[(slash+1):])
 
-        # print(lastday, today_month)
+            # print(lastday, today_month)
 
-        if(lastday_month!=today_month):
-            year=str(dt.year-int(dt.month==1))
-            df=pandas.DataFrame(chart)
+            if(lastday_month!=today_month):
+                year=str(dt.year-int(dt.month==1))
+                df=pandas.DataFrame(chart)
 
-            
-            file_name="../data/"+year+"#"+chart[0][2]+"_to_"+chart[0][-1]+".csv"
-            df.to_csv(os.path.join(BASE_DIR, file_name),index=False,header=False, encoding='cp949')
-            f=open(os.path.join(BASE_DIR, '../user_list_new.csv'), 'r', encoding='cp949')
-            rdr = csv.reader(f)
-            chart=[line for line in rdr]
+                
+                file_name="../data/"+year+"#"+chart[0][2]+"_to_"+chart[0][-1]+".csv"
+                df.to_csv(os.path.join(BASE_DIR, file_name),index=False,header=False, encoding='cp949')
+                f=open(os.path.join(BASE_DIR, '../user_list_new.csv'), 'r', encoding='cp949')
+                rdr = csv.reader(f)
+                chart=[line for line in rdr]
 
+                chart[0].append(today)
+                for j in range(1,len(chart)):
+                    chart[j].append('')
+
+                return {
+                    "notice": True,
+                    "num": len(chart)
+                }
+            else:
+                day_passed=today_day-lastday_day
+                for i in range(day_passed):
+                    chart[0].append(str(dt.month)+"_"+str(lastday_day+i+1))
+                    for j in range(1,len(chart)):
+                        chart[j].append('')
+                return {
+                    "notice": False
+                }
+        else:
             chart[0].append(today)
             for j in range(1,len(chart)):
                 chart[j].append('')
 
             return {
-                "notice": True,
-                "num": len(chart)
-            }
-        else:
-            day_passed=today_day-lastday_day
-            for i in range(day_passed):
-                chart[0].append(str(dt.month)+"_"+str(lastday_day+i+1))
-                for j in range(1,len(chart)):
-                    chart[j].append('')
-            return {
                 "notice": False
             }
-    else:
-        chart[0].append(today)
-        for j in range(1,len(chart)):
-            chart[j].append('')
-
+    except PermissionError:
         return {
-            "notice": False
+            "notice": False,
+            "error": 4
         }
-
+    except:
+        return {
+            "notice": False,
+            "error": 5
+        }
 
 # 취소
 @app.delete("/user/id")
@@ -373,12 +397,14 @@ def save():
 @app.get("/kill")
 def kill_server():
     global chart
-    df=pandas.DataFrame(chart)
-    df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
-    if sys.platform == 'win32':
-        os.system('taskkill /f /im python.exe')
-    else:
-        os.system("killall python")
+    try:
+        df=pandas.DataFrame(chart)
+        df.to_csv(os.path.join(BASE_DIR, "../user_list.csv"), index=False,header=False, encoding='cp949')
+    finally:
+        if sys.platform == 'win32':
+            os.system('taskkill /f /im python.exe')
+        else:
+            os.system("killall python")
 
 
 # SPA React Render
