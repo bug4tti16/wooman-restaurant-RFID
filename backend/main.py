@@ -237,7 +237,7 @@ def use_name(todayDate: DateType):
     # today_month=datetime_kst.strftime("%-m")
     # today_day=datetime_kst.strftime("%-d")
 
-    print(today, today_month, today_day)
+    # print(today, today_month, today_day)
 
     # 진우 코드 복붙 62 ~ 93
     if(len(chart[0])>2):
@@ -246,7 +246,7 @@ def use_name(todayDate: DateType):
         lastday_month=int(lastday[:slash])
         lastday_day=int(lastday[(slash+1):])
 
-        print(lastday, today_month)
+        # print(lastday, today_month)
 
         if(lastday_month!=today_month):
             year=str(dt.year-int(dt.month==1))
@@ -285,14 +285,12 @@ def use_name(todayDate: DateType):
             "notice": False
         }
 
-    
-
 
 # 취소
 @app.delete("/user/id")
 def user_revert(guest: Guest):
     global chart
-    print(guest.id)
+    # print(guest.id)
     if guest.id in ChartNumToName.keys():
 
         index = ChartNumToName[guest.id][1]
