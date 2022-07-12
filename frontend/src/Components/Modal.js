@@ -7,7 +7,6 @@ import NoticePageModal from './NoticeModal'
 
 // import '../App.css';
 import '../Modal.css'
-import { addISOWeekYears } from 'date-fns';
 
 const customStyles = {
   content: {
@@ -21,18 +20,12 @@ const customStyles = {
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 export default function StartPageModal(props) {
-  let subtitle;
   const [modalIsOpen, setIsOpen] = useState(true);
   const [startDate, setStartDate] = useState(new Date());
   // const [preHistory, setPreHistory] = useState(false);
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  // function afterOpenModal() {
-  //   // references are now sync'd and can be accessed.
-  //   subtitle.style.color = '#f00';
+  // function openModal() {
+  //   setIsOpen(true);
   // }
 
   async function closeModal() {
@@ -56,7 +49,7 @@ export default function StartPageModal(props) {
               newUserCnt.add(item.id)
             }
             else if (item.type === 2) {
-              newUserCnt = new Set([...newUserCnt].filter(x => x != item.id))
+              newUserCnt = new Set([...newUserCnt].filter(x => x !== item.id))
             }
           }
           props.setUsercnt(newUserCnt)

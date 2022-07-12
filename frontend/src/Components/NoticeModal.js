@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios'
 
-import DatePickerCustom from './DatePicker'
 // import '../App.css';
 import '../Modal.css'
 
@@ -18,10 +17,9 @@ const customStyles = {
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 export default function NoticePageModal(props) {
-  let subtitle;
-  const [noticeModalIsOpen, setNoticeIsOpen] = React.useState(false);
-  const [noticeChangeMonthModalIsOpen, setMonthModalIsOpen] = React.useState(false);
-  const [userNum, setNum] = React.useState(0);
+  const [noticeModalIsOpen, setNoticeIsOpen] = useState(false);
+  const [noticeChangeMonthModalIsOpen, setMonthModalIsOpen] = useState(false);
+  const [userNum, setNum] = useState(0);
 
   async function openModal() {
 
@@ -42,11 +40,6 @@ export default function NoticePageModal(props) {
   function openMonthModal() {
     setMonthModalIsOpen(true);
   }
-
-  // function afterOpenModal() {
-  //   // references are now sync'd and can be accessed.
-  //   subtitle.style.color = '#f00';
-  // }
 
   async function closeModal() {
     setNoticeIsOpen(false);
@@ -94,7 +87,6 @@ export default function NoticePageModal(props) {
           <h4>정보를 저장할 경우 저장 버튼을 눌러주세요</h4>
           <h4>식당 운영을 마무리할 경우 종료 버튼을 누르거나 혹은 종료라고 입력바랍니다</h4>
 
-          {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
           <div style={{
             display: "flex",
             justifyContent: "Center",
@@ -127,9 +119,7 @@ export default function NoticePageModal(props) {
           <h4>지난 달의 기록은 'data' 폴더에서 확인바랍니다.</h4>
           <h4>'user_list_new.csv'에서 회원 명단을 불러왔습니다.</h4>
           <h4>차트의 길이는 {userNum} 입니다.</h4>
-
-
-          {/* <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2> */}
+          
           <div style={{
             display: "flex",
             justifyContent: "Center",
