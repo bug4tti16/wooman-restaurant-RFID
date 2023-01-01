@@ -5,7 +5,7 @@
 ---
 ## 개발 가이드
 
-각 프로제트 별 README.md 참조
+각 폴더 별 README.md 참조
 - [Backend](./backend/README.md)
 - [Frontend](./frontend/README.md)
 - [바로가기 만들기](./docs/1.md)
