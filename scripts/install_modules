@@ -12,4 +12,5 @@ pip install keyboard
 pip install re
 pip install easygui
 pip install sys
+npm install -g npm
 pause
