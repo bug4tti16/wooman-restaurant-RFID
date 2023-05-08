@@ -4,13 +4,10 @@ pip install pandas
 pip install fastapi
 pip install uvicorn
 pip install numpy
-pip install os
 pip install pathlib
 pip install serial
 pip install pyserial
 pip install keyboard
-pip install re
 pip install easygui
-pip install sys
 npm install -g npm
 pause
