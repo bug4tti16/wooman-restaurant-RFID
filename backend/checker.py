@@ -5,9 +5,6 @@ import easygui
 import re
 import sys
 import pathlib
-from operator import itemgetter
-import json
-
 
 #카드번호 포맷 함수
 def clean(string):
