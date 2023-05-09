@@ -1,4 +1,4 @@
-﻿import os
+import os
 import pathlib
 import csv
 import serial
@@ -88,10 +88,19 @@ while True:
             keyboard.press_and_release("enter")
         
         if v==False:
-            add=easygui.enterbox("카드 번호")
-            if re.search('[0-9]',add):
-                update(dataa,add,card_no,'Num','RFID')
-                t=input(dataa,card_no,'RFID','Num')
-                keyboard.write(t)
-                keyboard.press_and_release("enter")
-                save(dataa,"user_list_RFID.csv")
+            prompt1="등록되지 않은 카드입니다.\n"
+            prompt2="카드번호를 입력하십시오."
+            while True:
+                add=easygui.enterbox(prompt1+prompt2."카드 번호 입력")
+                if add!=None and add!="":
+                    if check(dataa,add,"Num"):
+                        break
+                else:
+                    prompt1="잘못된 입력입니다!!"
+                    
+            
+            update(dataa,add,card_no,'Num','RFID')
+            t=input(dataa,card_no,'RFID','Num')
+            keyboard.write(t)
+            keyboard.press_and_release("enter")
+            save(dataa,"user_list_RFID.csv")
