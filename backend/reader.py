@@ -91,7 +91,7 @@ while True:
             prompt1="등록되지 않은 카드입니다.\n"
             prompt2="카드번호를 입력하십시오."
             while True:
-                add=easygui.enterbox(prompt1+prompt2."카드 번호 입력")
+                add=easygui.enterbox(prompt1+prompt2,"카드 번호 입력")
                 if add!=None and add!="":
                     if check(dataa,add,"Num"):
                         break
