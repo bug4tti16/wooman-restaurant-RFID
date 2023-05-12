@@ -163,6 +163,11 @@ while True:
                                     gut=True
                                     easygui.msgbox(msg5,"알림")
                                     break
+                                else:
+                                    gut=True
+                                    easygui.msgbox("이용자 등록이 취소되었습니다","알림")
+                                    break
+                                
                         if gut==False:
                             data.append({"Num":num,"Name":name,"RFID":""})
                             if data[0]=={"Num":"","Name":"","RFID":""}:
