@@ -151,14 +151,11 @@ while True:
                                 msg4="이미 등록된 정보가 있습니다.\n덮어쓰시겠습니까?"
                                 title3="경고"
                                 if easygui.ynbox(msg4,title3):
-                                    data.append({"Num":value[1],"Name":value[0],"RFID":""})
-                                    if data[0]=={"Num":"","Name":"","RFID":""}:
-                                        data.pop(0)
+                                    x["Num"]=value[1]
+                                    x["Name"]=value[0]
                                     save(data,"user_list_RFID.csv")
                                     msg5="변경 내용이 저장되었습니다"
-                                    easygui.msgbox(msg5)
-                                    break
-                                else:
+                                    easygui.msgbox(msg5,"알림")
                                     break
                             else:
                                 data.append({"Num":value[1],"Name":value[0],"RFID":""})
