@@ -300,6 +300,7 @@ while True:
                                     data.pop(cnt)
                                     break
                                 cnt=cnt=1
+                            save(data,"user_list_RFID.csv")
                             easygui.msgbox("이용자 정보가 삭제되었습니다","알림")
                             break
                         else:
