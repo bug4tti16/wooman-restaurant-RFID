@@ -234,7 +234,7 @@ while True:
 
                 if Valid_data==True:
                     msg="이용자 정보\n이름: "+ Name +"\n이용자 번호: " + Num
-                    choices=["처음으로","이 이용자 데이터 수정","다른 이용자 검색"]
+                    choices=["처음으로","이 이용자 데이터 수정","다른 이용자 검색","이용자 정보 삭제"]
                     prompt=easygui.buttonbox(msg,title,choices=choices)
                 
                 if prompt=="처음으로":
@@ -282,3 +282,18 @@ while True:
                     if run==False:
                         break
                         
+                if prompt=="이용자 정보 삭제":
+                    while True:
+                        if easygui.ynbox("이용자 정보가 삭제됩니다","경고"):
+                            cnt=0
+                            for x in data:
+                                if x.get("Num")==Num:
+                                    data.pop(cnt)
+                                    break
+                                cnt=cnt=1
+                            easygui.msgbox("이용자 정보가 삭제되었습니다","알림")
+                            break
+                        else:
+                            break
+                    
+                    
