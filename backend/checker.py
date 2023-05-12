@@ -148,6 +148,7 @@ while True:
                     if value[0]!="" and value[1]!="":
                         name=str(value[0])
                         num=str(value[1])
+                        gut=False
                         for x in data:
                             if x["Num"]==num:
                                 msg4="이미 등록된 정보가 있습니다.\n덮어쓰시겠습니까?"
@@ -159,16 +160,18 @@ while True:
                                         data.pop(0)
                                     save(data,"user_list_RFID.csv")
                                     msg5="변경 내용이 저장되었습니다"
+                                    gut=True
                                     easygui.msgbox(msg5,"알림")
                                     break
-                            else:
-                                data.append({"Num":num,"Name":name,"RFID":""})
-                                if data[0]=={"Num":"","Name":"","RFID":""}:
-                                    data.pop(0)
-                                save(data,"user_list_RFID.csv")
-                                msg5="변경 내용이 저장되었습니다"
-                                easygui.msgbox(msg5)
-                                break
+                        if gut==False
+                            data.append({"Num":num,"Name":name,"RFID":""})
+                            if data[0]=={"Num":"","Name":"","RFID":""}:
+                                data.pop(0)
+                            save(data,"user_list_RFID.csv")
+                            msg5="변경 내용이 저장되었습니다"
+                            easygui.msgbox(msg5)
+                            break
+                        break
                             
                     else:
                         error="데이터를 입력해 주세요"
