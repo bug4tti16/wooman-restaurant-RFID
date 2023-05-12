@@ -163,7 +163,7 @@ while True:
                                     gut=True
                                     easygui.msgbox(msg5,"알림")
                                     break
-                        if gut==False
+                        if gut==False:
                             data.append({"Num":num,"Name":name,"RFID":""})
                             if data[0]=={"Num":"","Name":"","RFID":""}:
                                 data.pop(0)
