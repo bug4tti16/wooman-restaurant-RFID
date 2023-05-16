@@ -296,7 +296,7 @@ while True:
                         if easygui.ynbox("이용자 정보가 삭제됩니다","경고"):
                             for x in data:
                                 if x.get("Num")==Num:
-                                    data.remove(X)
+                                    data.remove(x)
                                     break
                             save(data,"user_list_RFID.csv")
                             easygui.msgbox("이용자 정보가 삭제되었습니다","알림")
