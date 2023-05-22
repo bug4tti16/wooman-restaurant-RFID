@@ -88,19 +88,34 @@ while True:
             keyboard.press_and_release("enter")
         
         if v==False:
+            badcount=0
             prompt1="등록되지 않은 카드입니다.\n"
             prompt2="카드번호를 입력하십시오."
             while True:
                 add=easygui.enterbox(prompt1+prompt2,"카드 번호 입력")
+                if badcount > 3:
+                    newnum=False
+                    easygui.msgbox("등록되지 않은 이용자입니다","경고")
+                    break
+                if add==None:
+                    newnum=False
+                    easygui.msgbox("카드 등록을 취소합니다","경고")
+                    break
                 if add!=None and add!="":
                     if check(dataa,add,"Num"):
+                        newnum=True
                         break
+                    else:
+                        newnum=False
+                        prompt1="잘못된 입력입니다!!"
+                        badcount=badcount+1
                 else:
                     prompt1="잘못된 입력입니다!!"
-                    
+                    badcount=badcount+1
             
-            update(dataa,add,card_no,'Num','RFID')
-            t=input(dataa,card_no,'RFID','Num')
-            keyboard.write(t)
-            keyboard.press_and_release("enter")
-            save(dataa,"user_list_RFID.csv")
+            if newnum==True:
+                update(dataa,add,card_no,'Num','RFID')
+                t=input(dataa,card_no,'RFID','Num')
+                keyboard.write(t)
+                keyboard.press_and_release("enter")
+                save(dataa,"user_list_RFID.csv")
