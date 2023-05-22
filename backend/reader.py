@@ -93,7 +93,7 @@ while True:
             prompt2="카드번호를 입력하십시오."
             while True:
                 add=easygui.enterbox(prompt1+prompt2,"카드 번호 입력")
-                if badcount > 3:
+                if badcount > 2:
                     newnum=False
                     easygui.msgbox("등록되지 않은 이용자입니다","경고")
                     break
