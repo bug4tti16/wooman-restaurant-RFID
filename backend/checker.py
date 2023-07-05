@@ -181,8 +181,34 @@ while True:
                     else:
                         error="데이터를 입력해 주세요"
                         easygui.msgbox(error,"입력 오류")
-        
+            
         if selection=="종료":
+            list1=[]
+            list2=[]
+            newlist=["Num,Name,RFID\n"]
+            file=open("user_list_RFID.csv","r")
+            for x in file:
+                list1.append(x)
+            file.close()
+            for x in list1:
+                raw=x.split(",")[0]
+                if raw!="Num":
+                    num=int(raw)
+                    list2.append(num)
+            list2.sort()
+            count=0
+            for x in range (list2[-1]):
+                count=count+1
+                for y in list1:
+                    raw=y.split(",")[0]
+                    if raw!="Num":
+                        num=int(raw)
+                        if count==num:
+                            newlist.append(y)
+            filenew=open("User_list_RFID.csv","w")
+            for x in newlist:
+                filenew.write(x)
+            filenew.close()
             os._exit(0)
 
         if selection=="이용자 검색":
